@@ -1,0 +1,222 @@
+//import API's needed here:
+import java.util.Scanner;
+public class TheProject_TravelAgency
+{
+
+public static void main(String args[ ])
+{
+//variables
+String climateSlct; // user's selection of climate for travels
+String aprvl; //user's approval or decline for trip location
+float destMult = 0;// multiplier for climate/location user chooses
+int ppl; // number of people on the trip including the user
+int stayLength; // how long the user will be traveling
+int hotelSlct = 1; // user's selction of hotel
+float costPerNgt = 0; // hotel cost per night based on user's hotel selction
+
+float hotelCost; // total cost of stay in hotel
+int flightSlct; // user's selction of flights
+short flightType = 7; // user's selction of a one-way or return ticket
+float ticket = 1; // the cost of the type of ticket user purchses
+
+
+float flightCost = 0; // cost of user flight selection
+float ttlFlightCost; // total cost of flight(s)
+float subttl = 0; // cost of trip before discounts and tax and comission
+float ttlCost = 0; // total cost of trip
+float pplDis = 0; // discount based on number of people on the trip
+float costDis = 0; // discount based on total cost of trip
+final float comission = 1.03F; // commission made by travel agency for
+
+
+
+final float tax = 1.1025F; // tax on trip
+int i=0; // variable for "for" loop
+boolean isWord = false;// variable to make sure user input is all letters
+boolean isValid = false;// variable to validate user input for e
+String[][]choices = {{"AML Hostel (*)","Theodore Motel (**)","Holiday Inn(***)","Ritz Carlton (****)","Waldorf Astroia (*****)"},{"Spirit Airlines(Economy)","Delta Airlines (Business)","Emirates (First)"}}; //array to store optionsfor hotels and flights
+
+//climate selection
+do{
+climateSlct = getuI("Would you like to travel to a warm or cool location?");
+
+isWord = wordCheck(climateSlct);
+}
+while(isWord==false);//do-while loop to prompt for climateSlct again if not all characterss are letters
+
+if(climateSlct.substring(0,1).equalsIgnoreCase("c")||climateSlct.substring(0,1).equalsIgnoreCase("w"))
+
+{if (climateSlct.substring(0,1).equalsIgnoreCase("c")){
+System.out.println("That's so \"cool\", let's get you to Iceland");
+destMult = 1;
+}
+else
+{ System.out.println("That's great! Let's get you to Dubai");
+destMult = 1.6F;
+}
+//approval for trip destinaton
+do{
+aprvl = getuI("Would you like to continue with this trip destination?");
+isWord = wordCheck(aprvl);
+}while(isWord==false);
+
+if (aprvl.substring(0,1).equalsIgnoreCase("y"))
+{
+//prompt and store for number of people
+ppl = getuI("How many people will be traveling (including you)?",1);
+//prompt and store for lenght of stay
+stayLength = getuI("How many nights will your trip be?: ",2);
+//prompt and store for hotel selection and hotel cost calculations
+do{
+System.out.println("Hotel Choices: ");
+for (i=0;i<choices[0].length;i++) //loop to display all user choices for hotel options stored in an array
+
+System.out.println((i+1)+". "+choices[0][i]);
+
+hotelSlct = getuI("Enter the number corresponding to the hotel you would like to book: ", 3);
+
+isValid=validate(hotelSlct,1,5);
+}while(isValid==false);
+
+// calculating hotel costs
+switch (hotelSlct){
+case 1:
+costPerNgt = 75;
+break;
+case 2:
+costPerNgt = 150;
+break;
+case 3:
+costPerNgt = 300;
+break;
+case 4:
+costPerNgt = 750;
+break;
+case 5:
+costPerNgt = 1250;
+}
+hotelCost = ppl * costPerNgt * stayLength;
+//prompt and store for flight selections and flight cost calculations
+do{
+System.out.println("Flight Choices: ");
+for(i=0;i<choices[1].length;i++) //loop to display all user choices for flight options stored in an array
+
+System.out.println((i+1)+". "+choices[1][i]);
+flightSlct = getuI("Enter the number corresponding to the flight you would like to book: ", 3);
+
+isValid=validate(flightSlct,1,3);
+}while(isValid==false);
+isValid=false;
+while (isValid==false){ //while loop to make usser input for flightType is 1 or 2
+
+flightType = getuI("Enter 1 if it'll be a one-way flight, and 2 for a return flight:",flightType);
+
+isValid=validate(flightType,1,2);
+}
+//calculating flight costs
+switch (flightSlct){
+case 1:
+flightCost = 500;
+
+break;
+case 2:
+flightCost = 1000;
+break;
+case 3:
+flightCost = 2500;
+}
+if (flightType == 2)
+ticket = 1.6F;
+ttlFlightCost = ppl * flightCost * ticket;
+//calculating subtotal
+subttl = (ttlFlightCost + hotelCost) * destMult;
+
+// calculating discounts
+// discount based on people
+if (ppl <2)
+pplDis = 1F;
+else if (ppl == 2)
+pplDis = 0.9F;
+else if (ppl <= 5)
+pplDis = 0.85F;
+else if (pplDis <= 10)
+pplDis = 0.8F;
+else if (pplDis <=20)
+pplDis = 0.75F;
+else
+pplDis = 0.7F;
+// discount based on cost
+if (subttl < 7500)
+costDis = 1F;
+else if (subttl <= 25000)
+costDis = 0.9F;
+else if (subttl <= 50000)
+costDis = 0.85F;
+else if (subttl <= 100000)
+costDis = 0.8F;
+else
+costDis = 0.75F;
+
+//calculating and outputting cost of trip
+ttlCost = subttl * pplDis * costDis * tax * comission;
+System.out.print("The total for your trip is: $");
+System.out.printf("%.2f",ttlCost);
+}// closing if for approval of location
+else
+System.out.print("We're sorry you didn't like our location offerngs for your climate preference.\n"+ "Unfortunately, that's all the location offerings we currently have for your climate prefernce. However, \n"+ "please feel free to return in a couple weeks when we will have our location offerings updated. \n"+ "Once again, our sincerest apologies and thank you for choosng to work with us. \n" + "We hope to work together again soon!");
+}
+else
+System.out.print("Invalid input for climate selection. Please enter \"warm\" or \"cold\"");
+
+} //closing main method
+public static int getuI(String a,int b) //method to prompt a string, store an int, and return that int
+{
+Scanner input = new Scanner(System.in);
+int slct;
+System.out.println(a);
+slct=input.nextInt();
+return slct;
+}
+public static String getuI(String a)// method overload of getuI, except a string is stored and returned
+{
+Scanner input = new Scanner(System.in);
+String slct;
+System.out.println(a);
+slct=input.nextLine();
+return slct;
+}
+
+public static short getuI(String a, short x) // method overload of getuI, except a short is stored and returned
+{
+Scanner input = new Scanner(System.in);
+short slct;
+System.out.println(a);
+slct=input.nextShort();
+return slct;
+}
+public static boolean validate(int a, int b, int c){ //method to validate useer input as within range
+if(a>=b && a<=c)
+return true;
+else{
+System.out.println("Invalid input");
+return false;
+}
+}
+public static boolean wordCheck(String a){//method to validate user input as being composed of just letters
+int check = 0;
+boolean b;
+int i=0;
+for(;i<a.length();i++){
+if (!Character.isLetter(a.charAt(i)))
+check++;
+}
+if (check!=0){
+System.out.println("Invalid input");
+b=false;
+}
+else
+b=true;
+return b;
+
+}
+} //closing class header
